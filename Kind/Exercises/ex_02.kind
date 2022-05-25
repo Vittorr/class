@@ -5,64 +5,120 @@ type PairBool {
 }
 
 // Returns the first element of a pair
+
 fst(pair: PairBool): Bool
-  case pair{
+  case pair {
     new: pair.fst
   }
 
 // Returns the second element of a pair
+
 snd(pair: PairBool): Bool
-  case pair{
+    case pair {
     new: pair.snd
   }
 
 // Returns true if both elements of a PairBool are identical
-eql_elements(pair: PairBool): Bool 
-  case pair{
-    new: case pair.fst{
-      true: pair.snd
-      false: case pair.snd{
+
+eql_elements(a: PairBool): Bool 
+  case a {
+    new: case a.fst {
+      true: case a.snd {
+        true: Bool.true
+        false: Bool.false
+      }
+      false: case a.snd {
         true: Bool.false
         false: Bool.true
       }
     }
   }
-  
+
+// ajudou botando ?a na frente do case e vendo que podia dar cas em a.fst e a.snd
+
+
 // Returns true if both Pairs are equal 
 // eql(PairBool.new(false, false), PairBool.new(true, true)) -> false 
 // eql(PairBool.new(true, false), PairBool.new(true, false)) -> true
+
 eql(a: PairBool, b: PairBool): Bool
   case a {
-    new: ?a
+    new: case b {
+      new: case eql_elements(PairBool.new(a.fst, b.fst)) {
+        true: case eql_elements(PairBool.new(a.snd, b.snd)) {
+          true: Bool.true
+          false: Bool.false
+        }
+        false: Bool.false
+      }
+    }
   }
 
 // Returns true if both Pairs are different
 // not_eql(PairBool.new(false, false), PairBool.new(true, true)) -> true 
 // not_eql(PairBool.new(true, false), PairBool.new(true, false)) -> false
+
 not_eql(a: PairBool, b: PairBool): Bool
-  ?f
+  case a {
+    new: case b {
+      new: case eql_elements(PairBool.new(a.fst, b.fst)) {
+        true: case eql_elements(PairBool.new(a.snd, b.snd)) {
+          true: Bool.false
+          false: Bool.true
+        }
+        false: Bool.true
+      }
+    }
+  }
   
 // Creates a PairBool from 2 Booleans
+
 create(a: Bool, b: Bool): PairBool
-  PairBool.new(a,b)
+  case a {
+    true: case b {
+      true: PairBool.new(Bool.true, Bool.true)
+      false: PairBool.new(Bool.true, Bool.false)
+    }
+    false: case b {
+      true: PairBool.new(Bool.false, Bool.true)
+      false: PairBool.new(Bool.false,Bool.false)
+    }
+  }
 
 // Inverts the values of a PairBool
-// neg(PairBool.new(false, false)) -> PairBool.new(true, true)
-// neg(PairBool.new(false, true)) -> PairBool.new(true, false)
+// neg(PairBool.new(false, false) -> PairBool.new(true, true)
+// neg(PairBool.new(false, true) -> PairBool.new(true, false)
+
 neg(pair: PairBool): PairBool
-  case pair{
-    new: case ?a{
-      true: false
-      false: true
-    } 
-    
+   case pair {
+    new: case pair.fst {
+      true: case pair.snd {
+        true: PairBool.new(Bool.false, Bool.false)
+        false: PairBool.new(Bool.false, Bool.true)
+      }
+      false: case pair.snd {
+        true: PairBool.new(Bool.true, Bool.false)
+        false: PairBool.new(Bool.true, Bool.true)
+      }
+    }
   }
 
 // Inverts the 2 elements of a PairBool
+
 swap(pair: PairBool): PairBool 
-  case pair{
-    new: PairBool.new(pair.snd,pair.fst) 
+  case pair {
+    new: case pair.fst {
+      true: case pair.snd {
+        true: PairBool.new(Bool.true, Bool.true)
+        false: PairBool.new(Bool.false, Bool.true)
+      }
+      false: case pair.snd {
+        true: PairBool.new(Bool.true, Bool.false)
+        false: PairBool.new(Bool.false, Bool.false)
+      }
+    }
   }
+
 
 ex_02: IO<Unit>
   IO {
@@ -75,5 +131,4 @@ ex_02: IO<Unit>
     Tests._02.neg(neg)
     Tests._02.swap(swap)
   }
-// let a = PairBool.new(true,false)
-// let b = false
+ 
