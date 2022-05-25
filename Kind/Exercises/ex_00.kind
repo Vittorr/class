@@ -24,7 +24,6 @@ is_false(a: Bool): Bool
       false: Bool.true
   }
 
-
 // Negation
 // Returns the opposite of a Bool
 
@@ -93,6 +92,7 @@ xor(a: Bool, b: Bool): Bool
       false: Bool.false
     }
   }
+
 
 // Nor
 // Returns true if both inputs are false
