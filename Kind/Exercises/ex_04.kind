@@ -7,82 +7,231 @@ type Nat {
 
 // Doubles a number
 dbl(a: Nat): Nat // double
+  case a {
+    zero: Nat.zero
+    succ: Nat.succ(Nat.succ(dbl(a.pred)))
+  }
 
-  ?b
+// 0 x 2 = 0
+// 1 x 2 = 2
+// 2 x 2 = 4
+// 3 x 2 = 6
+// 4 x 2 = 8
+// 5 x 2 = 10
 
 // Addition
-add(a: Nat, b: Nat): Nat
 
-  ?a
+add(a: Nat, b: Nat): Nat
+  case a { 
+    zero: case b { 
+      zero: Nat.zero
+      succ: b
+    }
+    succ: case b {
+      zero: a
+      succ: Nat.succ(Nat.succ(add(a.pred, b.pred)))
+    }
+  }
+
+// 0 + 2 = 2
+// 1 + 2 = 3
+// 2 + 2 = 4 --------------> 1 + 1 = 2 ( + 2 )
+
+
+// 5 + 7 = 12 -------------> 4 + 6 = 10 ( + 2 )
 
 // Multiplication
+
 mul(a: Nat, b: Nat): Nat
-  
-  ?m
+  case a {
+    zero: case b {
+      zero: Nat.zero
+      succ: Nat.zero
+    }
+    succ: case b {
+      zero: Nat.zero
+      succ: add(a, mul(a, b.pred))
+    }
+  }
+
+// 5 x 3 = 15 --------> (5 x 2) + 5 ------> (5 x 1) + 5 + 5 --------> (5 x 0) + 5 + 5 + 5 /////////////// ----------->  5 + (5 x 2)
 
 // Subtraction
 // 4 - 5 = 0
 // 5 - 4 = 1
-sub(a: Nat, b: Nat): Nat
 
-  ?s
+sub(a: Nat, b: Nat): Nat
+  case a {
+    zero: case b {
+      zero: Nat.zero
+      succ: Nat.zero
+    }
+    succ: case b {
+      zero: a
+      succ: sub(a.pred, b.pred)
+    }
+  }
+
+// 0 - 0 = 0
+// 1 - 0 = 1
+// 0 - 1 = 0
+
+// 5 - 2 = 3 ----------> 4 - 1 = 3 -----------> 3 - 0 = 3
 
 // Factorial
 // 4! = 24
-fac(a: Nat): Nat 
-  
-  ?f
+
+fac(a: Nat): Nat    
+  case a {
+    zero: Nat.succ(Nat.zero)
+    succ: mul(a, fac(a.pred))
+  }
+
+// 1! = 1  
+// 2! = 2 x 1
+// 3! = 3 x 2 x 1 -------- 3 x (2!)
 
 // Equal
-eql(a: Nat, b: Nat): Bool // Given 2 numbers, it returns true if the 2 are the same and false if they are different.
-  
-  ?e 
+
+eql(a: Nat, b: Nat): Bool // Given 2 numbers, it returns true if the 2 are the same and false if they are different.  
+   case a {
+    zero: case b {
+      zero: Bool.true
+      succ: Bool.false
+    }
+    succ: case b {
+      zero: Bool.false
+      succ: eql(a.pred, b.pred)
+    }
+  }
+
+// não usar succ succ: Bool.true
+// 5 = 5 -----> 4 = 4 ------> 3 = 3 ------> 2 = 2 ---------> 1 = 1 ----------> 0 = 0
 
 // Do not use the "not" function to create the functions below
 
 // Greater than
 // 2 > 1 = True
 // 3 > 3 = False
+
 gtn(a: Nat, b: Nat): Bool // if A > B == True else false
-  
-  ?g
+   case a { 
+    zero: case b {
+      zero: Bool.false
+      succ: Bool.false
+    }
+    succ: case b {
+      zero: Bool.true
+      succ: gtn(a.pred, b.pred)
+    }
+  }
+
+// 5 > 4 = True -------> 4 > 3 ------> 3 > 2 --------> 2 > 1 ---------> 1 > 0 
 
 // Lower than
 // 1 < 2 = True
 // 3 < 3 = False
+
 ltn(a: Nat, b: Nat): Bool // if A > B == False else true 
-  
-  ?l
+   case a { 
+    zero: case b {
+      zero: Bool.false
+      succ: Bool.true
+    }
+    succ: case b {
+      zero: Bool.false
+      succ: ltn(a.pred, b.pred)
+    }
+  }
+
+
+// 1 < 2 = True --------> 0 < 1 = True 
+// 3 < 3 = False 
 
 // Minimum
 // min(2, 3) = 2
 // min(4, 1) = 1
+
 min(a: Nat, b: Nat): Nat // if A < B then A else B
-  
-  ?m2
+   case ltn(a, b) {
+    true: a
+    false: b
+  }
+
+// usar a função anterior para checar quem é menor --> opção 1 (mais facil)
 
 // Maximum
 // max(2, 3) = 3
 // max(4, 1) = 4
-max(a: Nat, b: Nat): Nat // if A > B then A else B
-  
-  ?m3
 
+max(a: Nat, b: Nat): Nat // if A > B then A else B
+   case gtn(a, b) {
+    true: a
+    false: b
+  }
+
+// usar a função anterior para checar quem é maior --> opção 1 (mais facil)
 
 // Divides a number by two
 // 2 / 2 = 1
 // 5 / 2 = 2
 // 1 / 2 = 0
+
 hlf(a: Nat): Nat
-  ?h
+   case a { 
+    zero: Nat.zero
+    succ: case sub(a, Nat.succ(Nat.succ(Nat.zero))) {
+      zero: case eql(a, Nat.succ(Nat.succ(Nat.zero))) {
+        true: Nat.succ(Nat.zero)
+        false: Nat.zero
+      }
+      succ: Nat.succ(hlf(sub(a, Nat.succ(Nat.succ(Nat.zero)))))
+    }
+  }
+
+// 2 / 2 = 1
+// 3 / 2 = 2
+// 4 / 2 = 2 --------> 2 / 2 = 1 ( + 1)
+
+// 10 / 2 = 5 -----> 8 / 2 = 4 ( + 1) ------------> 10 = 1 + hlf(8) -----> 1 + 1 + hlf(6) -----> 1 + 1 + 1 + hlf(4)
+// ---> mesma lógica da divisão... 
+
 
 // Division
 // 1 / 2 = 0
 // x / 0 = 0
 // 5 / 2 = 2
+
 div(a: Nat, b: Nat): Nat // division
-  
-  ?d
+   case a { 
+    zero: case b {
+      zero: Nat.zero
+      succ: Nat.zero
+    }
+    succ: case sub(a, b) {
+      zero: case eql(a, b) {
+        true: Nat.succ(Nat.zero)
+        false: Nat.zero
+      }
+      succ: case b {
+        zero: Nat.zero
+        succ: Nat.succ(div(sub(a, b), b))
+      }
+    }
+  }
+
+// 15 / 5 = 3 ----------> 10 / 2 = 2 ( + 1) -------> 5 / 5 = 1 (+ 1) (+ 1)
+// 20 / 4 = 5 ----------> 16 / 4 = 4 ( + 1)
+
+// 5 / 2 = 2 -----------> 3 / 2 =  1 ( + 1)?? -----> 1/2
+
+//---> dar case na subtração pra tratar o caso em que dá zero
+// obs: dar case no equal para tratar caso em que são iguais e evitar problema
+
+// 5 / 2 = 2
+// 4 / 2 = 2
+
+// 5 / 2 ------> 3 / 2 --------> 1 / 2
 
 
 ex_04: IO<Unit>
@@ -100,3 +249,4 @@ ex_04: IO<Unit>
     Tests._04.hlf(hlf)
     Tests._04.div(div)
   }
+ 
