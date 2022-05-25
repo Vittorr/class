@@ -1,0 +1,44 @@
+// 3 espadas 
+// 7 copas
+// 9 copas
+// rei de copas
+// ás
+// damas
+// valetes
+
+type Card {
+    new(value: Valor, tipo: Nipe)
+}
+
+type Valor {
+    um
+    dois
+    tres
+    quatro
+    cinco
+    rei
+    as
+    damas
+    valetes
+}
+
+type Nipe {
+    espadas
+    copas
+    ouros
+    paus
+}
+
+devolver(a: Card): Bool
+    case a {
+        new: case a.tipo {
+            espadas: Bool.false
+            copas: Bool.true
+            ouros: Bool.true
+            paus: Bool.false
+        }
+    }
+
+// True --> uma carta vermelha (copas e ouros)
+// False --> se não for
+
