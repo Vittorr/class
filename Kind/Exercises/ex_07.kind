@@ -118,6 +118,21 @@ concat(a: Bits, b: Bits): Bits
 //add(b,c) -> Bits.o(Bits.i(Bits.o(Bits.o(Bits.i(Bits.o(Bits.e))))))
 //add(c,d) -> Bits.i(Bits.i(Bits.o(Bits.i(Bits.i(Bits.e)))))
 
+add_inicial(a: Bits, b: Bits): Bits 
+  case a {
+    e: b
+    o: case b {
+      e: a
+      o: add_inicial(dec(a), inc(b))
+      i: add_inicial(dec(a), inc(b))
+    }
+    i: case b {
+      e: a
+      o: add_inicial(dec(a), inc(b))
+      i: add_inicial(dec(a), inc(b))
+    }
+  }
+
 add(a: Bits, b: Bits): Bits
   case a {
     e: b
