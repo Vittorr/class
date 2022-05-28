@@ -216,6 +216,11 @@ string_to_upper(xs: String): String
     cons: map(to_upper, xs)
   }
 
+string_to_upper1(xs: String): String
+  case xs {
+    nil: String.nil
+    cons: String.cons(to_upper(xs.head), string_to_upper1(xs.tail))
+  }
 
 
 //Convers the String into bits
