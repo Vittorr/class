@@ -355,7 +355,7 @@ filter(cond: Char -> Bool, xs: String): String
 flatten(lxs: List<String>): String
   case lxs {
     nil: String.nil
-    cons: String.concat(lxs.head, flatten(lxs.tail))
+    cons: concat(lxs.head, flatten(lxs.tail))
   }
 
 
