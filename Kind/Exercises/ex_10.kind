@@ -352,21 +352,10 @@ filter(cond: Char -> Bool, xs: String): String
 
 //flatten([a,b,c]) -> "HIHellotext"
 
-flatten_extra(lxs: List<String>): String
+flatten(lxs: List<String>): String
   case lxs {
     nil: String.nil
-    cons: String.concat(lxs.head, flatten_extra(lxs.tail))
-  }
-
-// tomar cuidado pra nao botar head na frente do acum pra nao sair invertido
-
-flatten(lxs: List<String>): String
-  flatten_aux(lxs, String.nil)
-
-flatten_aux(lxs1: List<String>, acum: String): String
-  case lxs1 {
-    nil: acum
-    cons: flatten_aux(lxs1.tail, concat(acum, lxs1.head))
+    cons: String.concat(lxs.head, flatten(lxs.tail))
   }
 
 
