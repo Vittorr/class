@@ -280,12 +280,20 @@ is_nat(xs: String): Bool
 
 // Divides the elements of a String into a list, using a match you decide
 
-//split(b, "l") -> ["He","" , "o"
+//split(b, "l") -> ["He","" , "o"]
 //split(c, "e") -> ["t", "xt"]
 
 split(xs: String, match: String): List<String>
-  ?split
-
+  case xs {
+    nil: List.nil<String>
+    cons: 
+      let change = String.to_char(match)
+      let cond = equal(xs.head, change)
+      case cond {
+        true: split(xs.tail, match)
+        false: List.cons<String>(Char.to_string(xs.head), split(xs.tail, match))
+      }
+  }
 
 
 // Takes any elements while the condition is matched.
