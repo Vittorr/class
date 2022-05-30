@@ -6,21 +6,72 @@ type Object {
 }
 
 // Converts a text to an Object. If not possible, returns rock
+
 Object.read(code: String): Object
-  ?a
+  case code {
+      nil: Object.rock
+      cons: 
+        let compare = String.eql(code, "paper")
+        case compare {
+            true: Object.paper
+            false: 
+                let newcompare = String.eql(code, "scissors")
+                case newcompare {
+                    true: Object.scissors
+                    false: Object.rock
+                }
+        }
+  }
+
 
 // Converts a number to an Object. If not possible, returns rock
+
 Object.from_nat(n: Nat): Object
-  ?b
+  case n {
+      zero: Object.rock
+      succ: 
+        let compare = Nat.eql(n, 1) 
+        case compare {
+            true: Object.paper
+            false: 
+                let newcompare = Nat.eql(n, 2)
+                case newcompare {
+                    true: Object.scissors
+                    false: Object.rock
+                }
+        }
+  }
 
 // Checks if Object a beats Object b
 // Draw = false
+
 Object.wins(a: Object, b: Object): Bool
-  ?c
+  case a {
+      rock: case b {
+          rock: Bool.false
+          paper: Bool.false
+          scissors: Bool.true
+      }
+      paper: case b {
+          rock: Bool.true
+          paper: Bool.false
+          scissors: Bool.false
+      }
+      scissors: case b {
+          rock: Bool.false
+          paper: Bool.true
+          scissors: Bool.false
+      }
+  }
+
 
 // If wins return "You won", else "You lost"
+
 Object.match_result(win: Bool): String
-  ?d
+  case win {
+      true: "You won"
+      false: "You lost"
+  }
 
 Test: IO(Unit)
   IO {
@@ -29,22 +80,27 @@ Test: IO(Unit)
     get user_input = IO.get_line
 
     // Converts the user_input (String) to the Object type
-    let user_object = ?e
+    let user_object = Object.read(user_input)
 
     // Returns a random number below 3
     // 0, 1 or 2
     get random_num = IO.random(3)
 
     // Converts random_num (Nat) to the Object type
-    let cpu_object = ?f
+    let cpu_object = Object.from_nat(random_num)
 
     // Compares user_object and cpu_object and returns true if user wins
-    let user_won = ?g
+    let user_won = Object.wins(user_object, cpu_object)
 
     // Final message to be said: "You won" or "You lost"
-    let final_message = ?h
+    let final_message = Object.match_result(user_won)
 
     IO.print(final_message)
 
     Test
   }
+
+
+
+ 
+ 
