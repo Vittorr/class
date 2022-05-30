@@ -1,0 +1,90 @@
+// FORMA 1 DE FAZER (NÃO FUNCIONA PARA TODOS OS CASOS): 
+
+
+replace(aux: List<String>, to_remove: String, to_add: String): List<String>
+    case aux {
+        nil: List.nil<String>
+        cons: 
+            let compare = String.eql(aux.head, to_remove) 
+            case compare {
+                true: List.cons<String>(to_add, replace(aux.tail, to_remove, to_add))
+                false: List.cons<String>(aux.head, replace(aux.tail, to_remove, to_add))
+            }
+    }
+
+addspace(aux1: List<String>): String
+    case aux1 {
+        nil: String.nil
+        cons: 
+            let first = String.concat(aux1.head, " ")
+            // String.cons(first, addspace(aux1.tail))
+            case aux1.tail {
+                nil: aux1.head
+                cons: 
+                    // String.cons(aux1.head, String.cons(' ', addspace(aux1.tail))) 
+                    String.concat(first, addspace(aux1.tail))
+            }       
+    }
+
+Find_and_replace(to_remove: String, to_add: String, str: String): String
+    case str {
+        nil: str
+        cons: 
+            let listsplit = String.split(str, " ")
+            let newlist = replace(listsplit, to_remove, to_add)
+            let resul = addspace(newlist)
+            resul
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// FORMA 2 DE FAZER (BEM MAIS EFICIENTE): 
+
+addsomething(aux1: List<String>, something: String): String
+    case aux1 {
+        nil: String.nil
+        cons: 
+            let first = String.concat(aux1.head, something)
+            case aux1.tail {
+                nil: aux1.head
+                cons: 
+                    String.concat(first, addsomething(aux1.tail, something))
+            }       
+    }
+
+Find_and_replace1(to_remove: String, to_add: String, str: String): String
+    case str {
+        nil: str
+        cons: 
+            let listsplit = String.split(str, to_remove)
+            let resul = addsomething(listsplit, to_add)
+            resul
+    }
+
+test0: _
+  Find_and_replace("test", "example", "In this test, the word test should be replaced by the word example.")
+  // This should be the result: "In this example, the word example should be replaced by the word example."
+
+test1:_
+  Find_and_replace("test", "example", "test")
+  // This should be the result: "In this example, the word example should be replaced by the word example."
+
+test2:_
+    let a = ["a", "a", "c"]
+    replace(a, "a", "b")
+
+test3:_
+    addspace(["a", "a", "c"])
+
+test4:_
+    String.split("In this test, the word test should be replaced by the word example.", "test")
+
+test5:_
+    Find_and_replace1("In this test", "example", "In this test, the word test should be replaced by the word example.")
+// This should be the result: "In this example, the word example should be replaced by the word example."
+
+test6:_
+    Find_and_replace1("jogo", "vida", "jogo jogo1 jogo jogo2 jogo jogo3 jogo jogo4 jogo")
+    
+ 
