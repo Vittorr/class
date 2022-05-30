@@ -14,8 +14,21 @@
 // get_first_num("1239 * 832")   = "1239"
 // get_first_num("pos d 890")    = "pos"
 // get_first_num("932 / asdas")  = "932"
+
+maybe_to_string(a: Maybe<String>): String
+	case a {
+		none: String.nil
+		some: a.value
+	}
+
 get_first_num(exp: String): String 
-	?a
+	let expr = String.split(exp, " ")
+	let numfirst = List.get<String>(0, expr)
+
+	let first = maybe_to_string(numfirst)
+
+	first
+
 
 // Gets a expression operator (it can either be a operator or not) as a Char 
 // Examples: 
@@ -23,8 +36,16 @@ get_first_num(exp: String): String
 // get_operator("1239 * 832")   = "*"
 // get_operator("pos d 890")    = "d"
 // get_operator("932 / asdas")  = "/"
-get_operator(exp: String): Char 
-	?b
+
+
+get_operator(exp: String): String 
+	let expr = String.split(exp, " ")
+	let operator = List.get<String>(1, expr)
+
+	let second = maybe_to_string(operator)
+	
+	second
+
 
 // Gets the second element (it can either be a number or not) of a expression as a String
 // Examples: 
@@ -32,8 +53,14 @@ get_operator(exp: String): Char
 // get_second_num("1239 * 832")   = "832"
 // get_second_num("pos d 890")    = "890"
 // get_second_num("932 / asdas")  = "asdas" 
+
 get_second_num(exp: String): String 
-  ?c
+  	let expr = String.split(exp, " ")
+	let numsecond = List.get<String>(2, expr)
+
+	let third = maybe_to_string(numsecond)
+
+	third
 
 // Cheks if all elements of the expression are valid (first number, operator and second number)
 // You can choose what operators will work in your calculator. 
@@ -42,27 +69,62 @@ get_second_num(exp: String): String
 // is_expression_valid("1239 * 832")   = true
 // is_expression_valid("pos d 890")    = false
 // is_expression_valid("932 / asdas")  = false
-is_expression_valid(fst: String, op: Char, snd: String): Bool 	
-	?d
+
+
+is_expression_valid(fst: String, op: String, snd: String): Bool 	
+	let checkone = String.is_nat(fst) 
+	let checktwo = String.is_nat(snd)
+
+	case checkone {
+		true: case checktwo {
+			true: switch String.eql(op) {
+				"+": Bool.true
+				"-": Bool.true
+				"/": Bool.true
+				"*": Bool.true
+				"^": Bool.true
+			} default Bool.false
+
+			false: Bool.false
+		}
+		false: Bool.false
+	}
+
 
 // Gets the expression result 
-get_result(fst: Nat, op: Char, snd: Nat): Nat
-	?e
+
+
+get_result(fst: Nat, op: String, snd: Nat): Nat
+	case op {
+		nil: Nat.zero
+		cons: switch String.eql(op) {
+			"+": Nat.add(fst, snd)
+			"-": Nat.sub(fst, snd)
+			"/": Nat.div(fst, snd)
+			"*": Nat.mul(fst, snd)
+			"^": Nat.pow(fst, snd)
+		} default Nat.half(fst)
+	}
+
 
 game_03_clctr: IO<Unit>
 	IO {
 		IO.print("Digite sua expressão: ")
 		get exp = IO.get_line // Assign the user input to the variable exp as a String
 
-		let first_num  = ?f // get the first number of "exp"
-		let second_num = ?g // get the second number of "exp"
-		let operator   = ?h // get the operator of "exp"
+		let first_num  = get_first_num(exp)
+		let second_num = get_second_num(exp)
+		let operator   = get_operator(exp)
 
 		case is_expression_valid(first_num, operator, second_num) {
 			true:
 			  // Displays "exp" result and restarts the program 
 				IO {
-					IO.print(?i)
+					let numone = Nat.read(first_num)
+					let numtwo = Nat.read(second_num)
+					let opr = operator
+
+					IO.print(Nat.show(get_result(numone, opr, numtwo)))
 					game_03_clctr
 				} 
 			false:
@@ -73,5 +135,5 @@ game_03_clctr: IO<Unit>
 				}   
 		} 
 	}
- 
+
  
