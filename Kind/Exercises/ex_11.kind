@@ -8,7 +8,15 @@ type ListMap <A: Type> {
 // Inserts a value
 
 set<A: Type>(key: Nat, value: A, lm: ListMap<A>): ListMap<A>
-  ?set
+  case lm {
+    empty: ListMap.cons<A>(Pair.new<Nat, A>(key, value), ListMap.empty<A>)
+    cons: case Nat.eql(key, lm.head@fst) {
+      true: ListMap.cons<A>(Pair.new<Nat, A>(key, value), lm.tail)
+      false: ListMap.cons<A>(lm.head, set<A>(key, value, lm.tail))
+    }
+  }
+
+
 
 // Returns a Value from a Key (if there is one)
 
@@ -28,30 +36,63 @@ get<A: Type>(key: Nat, lm: ListMap<A>): Maybe<A>
      }
  }
 
+
+
 // Applies a function to a Value from a Key
 
 mut<A: Type>(key: Nat, fn: A -> A, lm: ListMap<A>): ListMap<A>
-  ?mut
+  case lm {
+    empty: ListMap.empty<A>
+    cons: case Nat.eql(key, lm.head@fst) {
+      true: ListMap.cons<A>(Pair.new<Nat, A>(lm.head@fst, fn(lm.head@snd)), lm.tail)
+      false: ListMap.cons<A>(lm.head, mut<A>(key, fn, lm.tail))
+    }
+  }
+
+
 
 // Converts the ListMap to a String
 
 show<A: Type>(fn: A -> String, lm: ListMap<A>): String
   ?show
 
+
+
 // Checks if the ListMap has a key
 
 has<A:Type>(key: Nat, lm: ListMap<A>): Bool
-  ?has
+  case lm {
+    empty: Bool.false 
+    cons: case Nat.eql(key, lm.head@fst) {
+      true: Bool.true
+      false: has<A>(key, lm.tail)
+    }
+  }
+
+
 
 // Removes all Elements that doesn't satisfy a condition
 
 filter<A: Type>(cond: A -> Bool, lm: ListMap<A>): ListMap<A>
-  ?filter
+  case lm {
+    empty: ListMap.empty<A>
+    cons: 
+      let conds = cond(lm.head@snd)
+      case conds {
+        true: ListMap.cons<A>(lm.head, filter<A>(cond, lm.tail))
+        false: filter<A>(cond, lm.tail)
+      }
+  }
+
+
 
 // Applies a function to all Values
 
 map<A: Type>(fn: A -> A, lm: ListMap<A>): ListMap<A>
-  ?map
+  case lm {
+    empty: ListMap.empty<A>
+    cons: ListMap.cons<A>(Pair.new<Nat, A>(lm.head@fst, fn(lm.head@snd)), map<A>(fn, lm.tail))
+  }
 
 
 
@@ -70,4 +111,5 @@ stress_test(sets: Nat, gets: Nat): String
 ex_11: _
   // stress_test(10000, 10000)
   "test"
+
 
