@@ -16,7 +16,20 @@ set<A: Type>(key: Bits, val: A, map: BitsMap<A>): BitsMap<A>
 // If there it is no value for the key, returns Maybe.none<A>
 
 get<A: Type>(key: Bits, map:BitsMap<A>): Maybe<A>
-  ?get
+  case key {
+      e: case map {
+          new: Maybe.none<A>
+          tie: map.val
+      }
+      o: case map {
+          new: Maybe.none<A>
+          tie: get<A>(key.pred, map.lft)
+      }
+      i: case map {
+          new: Maybe.none<A>
+          tie: get<A>(key.pred, map.rgt)
+      }
+  }
 
 
 //Applies a function to a Value of the specific key and returns the same map but
