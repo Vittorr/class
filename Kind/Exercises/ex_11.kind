@@ -58,7 +58,16 @@ mut<A: Type>(key: Nat, fn: A -> A, lm: ListMap<A>): ListMap<A>
 // Converts the ListMap to a String
 
 show<A: Type>(fn: A -> String, lm: ListMap<A>): String
-  ?show
+  "[" | show_aux<A>(fn, lm) | "]"
+
+show_aux<A: Type>(fn: A -> String, lm: ListMap<A>): String
+  case lm {
+    empty: ""
+    cons: case lm.tail {
+      empty: "{" | Nat.show(lm.head@fst) | "," | fn(lm.head@snd) | "}"
+      cons: "{" | Nat.show(lm.head@fst) | "," | fn(lm.head@snd) | "}" | "," | show_aux<A>(fn, lm.tail)
+    }
+  }
 
 
 
